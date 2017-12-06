@@ -242,10 +242,71 @@ public class ExampleMaze {
     ArrayList<Cell> n = new ArrayList<Cell>();
     n.add(m.start);
     t.checkExpect(m.worklist, n);
+    t.checkExpect(m.processed, new ArrayList<Cell>());
+  }
+  
+  
+  // initialize test conditions for onKeyEvent
+  // includes a maze and a cell global variables to be reused
+  Maze keyEventm = new Maze(3, 3);
+  Cell keyEventc = new Cell(0, 0, 10);
+  void keyEventTestConditions() {
+    keyEventm.completed = true;
+    keyEventm.playerControl = true;
+    keyEventm.worklist.add(keyEventc);
+    keyEventm.processed.add(keyEventc);
+    keyEventm.playerControl = true;
   }
   
   // Testing onKeyEvent
   void testOnKeyEvent(Tester t) {
+    ArrayList<Cell> n = new ArrayList<Cell>();
+    n.add(keyEventm.start);
+    
+    keyEventTestConditions();
+    keyEventm.onKeyEvent("r");
+    t.checkExpect(keyEventm.playerControl, false);
+    t.checkExpect(keyEventm.player, new Player(keyEventm.cellSize));
+    t.checkExpect(keyEventm.searchType, "bfs");
+    t.checkExpect(keyEventm.worklist, n);
+    t.checkExpect(keyEventm.processed, new ArrayList<Cell>());
+    t.checkExpect(keyEventm.completed, false);
+    
+    keyEventTestConditions();
+    keyEventm.onKeyEvent("e");
+    t.checkExpect(keyEventm.playerControl, false);
+    t.checkExpect(keyEventm.player, new Player(keyEventm.cellSize));
+    t.checkExpect(keyEventm.searchType, "dfs");
+    t.checkExpect(keyEventm.worklist, n);
+    t.checkExpect(keyEventm.processed, new ArrayList<Cell>());
+    t.checkExpect(keyEventm.completed, false);
+    
+    keyEventTestConditions();
+    keyEventm.onKeyEvent("g");
+    t.checkExpect(keyEventm.playerControl, true);
+    t.checkExpect(keyEventm.searchType, "dfs");
+    t.checkExpect(keyEventm.worklist, n);
+    t.checkExpect(keyEventm.processed, new ArrayList<Cell>());
+    t.checkExpect(keyEventm.completed, false);
+    
+    keyEventTestConditions();
+    keyEventm.onKeyEvent("p");
+    t.checkExpect(keyEventm.playerControl, true);
+    t.checkExpect(keyEventm.player, new Player(keyEventm.cellSize));
+    t.checkExpect(keyEventm.searchType, "dfs");
+    t.checkExpect(keyEventm.worklist, n);
+    t.checkExpect(keyEventm.processed, new ArrayList<Cell>());
+    t.checkExpect(keyEventm.completed, false);
+    
+    keyEventm.onKeyEvent("t");
+    t.checkExpect(keyEventm.showVisited, false);
+    keyEventm.onKeyEvent("t");
+    t.checkExpect(keyEventm.showVisited, true);
+    
+    // movement cannot be reliably tested as maze barriers are unknown
+    // in the generated maze and thus movement will not work in certain
+    // unknown directions, and because the effect snowballs, all tests will
+    // be invalid if the movement fails at any point
     
   }
   

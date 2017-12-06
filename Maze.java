@@ -487,7 +487,7 @@ public class Maze extends World {
   }
   
   // gets the edge that connects Cell start and Cell end
-  // returns null if it doesnt exist
+  // returns null if it doesn't exist
   Edge getEdge(Cell start, Cell end) {
     for (Edge e : path) {
       if ((e.c1 == start && e.c2 == end) || (e.c1 == end && e.c2 == start)) {
