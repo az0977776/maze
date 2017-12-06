@@ -233,7 +233,7 @@ public class ExampleMaze {
   
   // Testing the makeAllCellsUnvisited method
   void testResetMaze(Tester t) {
-    Maze m = new Maze(2, 2, "player");
+    Maze m = new Maze(2, 2);
     m.cells.get(1).get(1).visited = true;
     m.resetMaze();
     t.checkExpect(m.cells.get(1).get(1).visited, false);
@@ -341,7 +341,7 @@ public class ExampleMaze {
   
   // tests the rendering of the Maze
   void testBigBang(Tester t) {
-    Maze m = new Maze(50, 50,"dfs");
+    Maze m = new Maze(50, 50);
     World w = m;
     w.bigBang(m.width * m.cellSize + 8, m.height * m.cellSize + 8,0.00001);
   }

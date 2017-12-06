@@ -61,38 +61,6 @@ public class Maze extends World {
   // the player (used when giving human control)
   Player player;
   
-  Maze(int width, int height, String s) {
-    this.width = width;
-    this.height = height;
-    cellSize = 640 / Math.min(width, height);
-    
-    cells = new ArrayList<ArrayList<Cell>>();
-    edges = new ArrayList<Edge>();
-    path = new ArrayList<Edge>();
-    defaultWorld = new WorldScene(width * cellSize, height * cellSize);
-    weightComp = new WeightComp();
-    arrayUtils = new ArrayUtils();
-    cellHashMap = new HashMap<String, String>();
-    playerControl = true;
-    player = new Player(cellSize);
-    showVisited = true;
-    
-    generateCells();
-    setLinks();
-    generateEdges();
-    generateHashMap();
-    kruskalImplements();
-    
-    searchType = s;
-    start = cells.get(0).get(0);
-    target = cells.get(width - 1).get(height - 1);
-    cameFromEdge = new HashMap<Cell,Edge>();
-    worklist = new ArrayList<Cell>();
-    processed = new ArrayList<Cell>();
-    completed = false;
-    worklist.add(0,start);
-  }
-  
   Maze(int width, int height) {
     this.width = width;
     this.height = height;
