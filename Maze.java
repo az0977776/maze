@@ -443,7 +443,7 @@ public class Maze extends World {
   // Depth-first search
   void DFS() {
     if (worklist.size() > 0 && !completed) {
-      next = worklist.remove(0);
+      next = worklist.remove(worklist.size() - 1);
       next.visited = true;
       if (processed.contains(next)) {
         return;
@@ -482,7 +482,7 @@ public class Maze extends World {
   // Breadth-first search
   void BFS() {
     if (worklist.size() > 0 && !completed) {
-      next = worklist.remove(worklist.size() - 1);
+      next = worklist.remove(0);
       next.visited = true;
       if (processed.contains(next)) {
         return;
