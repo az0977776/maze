@@ -59,4 +59,9 @@ public class Cell {
   String generateName() {
     return this.x + " " + this.y;
   }
+  
+  // makes a cell unvisited
+  void makeUnvisited() {
+    this.visited = false;
+  }
 }

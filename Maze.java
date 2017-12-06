@@ -73,7 +73,7 @@ public class Maze extends World {
     weightComp = new WeightComp();
     arrayUtils = new ArrayUtils();
     cellHashMap = new HashMap<String, String>();
-    playerControl = false;
+    playerControl = true;
     player = new Player(cellSize);
     showVisited = true;
     
@@ -108,7 +108,7 @@ public class Maze extends World {
     weightComp = new WeightComp();
     arrayUtils = new ArrayUtils();
     cellHashMap = new HashMap<String, String>();
-    playerControl = false;
+    playerControl = true;
     player = new Player(cellSize);
     showVisited = true;
     
@@ -160,6 +160,16 @@ public class Maze extends World {
     worklist.add(0,start);
     completed = false;
     
+  }
+  
+  // makes all of the cells unvisited without resetting the maze itself
+  // used when player control is toggled
+  void makeAllCellsUnvisited() {
+    for (ArrayList<Cell> cl: cells) {
+      for (Cell c: cl) {
+        c.makeUnvisited();
+      }
+    }
   }
 
   //generates all the Cells
@@ -297,7 +307,8 @@ public class Maze extends World {
     }
     if (ke.equals("p")) {
       this.playerControl = !playerControl;
-      remake("player");
+      makeAllCellsUnvisited();
+      this.player = new Player(cellSize); 
     }
     
     if (ke.equals("t")) {
