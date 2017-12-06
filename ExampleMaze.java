@@ -1,6 +1,9 @@
+import java.awt.Color;
 import java.util.*;
 
 import javalib.impworld.World;
+import javalib.worldimages.OutlineMode;
+import javalib.worldimages.RectangleImage;
 import tester.*;
 
 public class ExampleMaze {
@@ -174,6 +177,20 @@ public class ExampleMaze {
     t.checkExpect(m.cells.get(2).get(2).left, m.cells.get(1).get(2));
   }
   
+  // test generateHashMap
+  void testGenerateHashMap(Tester t) {
+    Maze m = new Maze(10,10);
+    // the size of the cell hashmap should be equal to the number of cells in the maze
+    // in this case 10 by 10 maze is equal to 100 cells
+    t.checkExpect(m.cellHashMap.size(), 100);
+    // the cellhashmap should contain keys for every single cell in the maze
+    for (ArrayList<Cell> a: m.cells) {
+      for (Cell c: a) {
+        t.checkExpect(m.cellHashMap.containsKey(c.generateName()), true);
+      }
+    }    
+  }
+  
   // TODO Test player class and methods
   
   // TODO Test onKeyEvent
@@ -222,16 +239,54 @@ public class ExampleMaze {
     
   }
   
-  // TODO test getCurrentCell
+  // test getCurrentCell
   void testGetCurrentCell(Tester t) {
+    Maze m = new Maze(10,10);
+    // the player should be starting on the starting cell
+    t.checkExpect(m.player.x, m.start.x);
+    t.checkExpect(m.player.y, m.start.y);
+    // the current cell of the player is the starting cell
+    t.checkExpect(m.getCurrentCell(), m.start);
+    // moving the player to the right by one cell
+    m.player.x++;
+    // moving the player to down by one cell
+    m.player.y++;
+    // the new get current cell is the cell to the bottom right of the starting cell
+    t.checkExpect(m.getCurrentCell(), m.start.right.bottom);
+  }
+ 
+  // test cell display function
+  void testCellDisplay(Tester t) {
+    Cell c1 = new Cell(1,1,3);
+    Cell c2 = new Cell(1,1,3);
+    Cell c3 = new Cell(1,1,3);
+    
+    c1.truePath = true;
+    c2.visited = true;
+    
+    // if the cell is on the truepath then it will always be visible after completion
+    t.checkExpect(c1.display(false), new RectangleImage(3, 3, OutlineMode.SOLID,
+        new Color(220, 220, 60)));
+    t.checkExpect(c1.display(true), new RectangleImage(3, 3, OutlineMode.SOLID,
+        new Color(220, 220, 60)));
+    
+    // if the cell is visited and not on the truepath then it only shows when the display
+    // function is passed true as a parameter
+    t.checkExpect(c2.display(false), new RectangleImage(3, 3, OutlineMode.SOLID,
+        Color.LIGHT_GRAY));
+    t.checkExpect(c2.display(true), new RectangleImage(3, 3, OutlineMode.SOLID,
+        new Color(170, 170, 240)));
+    
+    // if the cell is not visited and not on the true path then it is light gray
+    t.checkExpect(c3.display(false), new RectangleImage(3, 3, OutlineMode.SOLID,
+        Color.LIGHT_GRAY));
+    t.checkExpect(c3.display(true), new RectangleImage(3, 3, OutlineMode.SOLID,
+        Color.LIGHT_GRAY));
     
   }
   
-  // TODO test cell display function
-  
-  
   // tests the rendering of the Maze
-  void testBigBang(Tester t) {
+  void dtestBigBang(Tester t) {
     Maze m = new Maze(10, 10,"player");
     World w = m;
     w.bigBang(m.width * m.cellSize + 8, m.height * m.cellSize + 8,0.01);
