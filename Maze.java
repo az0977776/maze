@@ -186,11 +186,11 @@ public class Maze extends World {
     Cell tempcell;
     for (int i = 0; i < width; i++) {
       for (int j = 0; j < height; j++) {
-       //System.out.println(i + ", " + j);
+        //System.out.println(i + ", " + j);
         tempcell = cells.get(i).get(j);
         tempcell.left = (i == 0 
             ? null : cells.get(i - 1).get(j));
-       tempcell.top = (j == 0 
+        tempcell.top = (j == 0 
             ? null : cells.get(i).get(j - 1));
         tempcell.right = (i == width - 1 
             ? null : cells.get(i + 1).get(j));
@@ -378,11 +378,11 @@ public class Maze extends World {
   // on tick 
   public void onTick() {
     if (!playerControl) {
-      if (searchType == "dfs") {
-        DFS();
+      if (searchType.equals("dfs")) {
+        dfs();
       }
       else {
-        BFS();
+        bfs();
       }
     }
     if (player.x == target.x && player.y == target.y && !completed) {
@@ -441,7 +441,7 @@ public class Maze extends World {
   }
   
   // Depth-first search
-  void DFS() {
+  void dfs() {
     if (worklist.size() > 0 && !completed) {
       next = worklist.remove(worklist.size() - 1);
       next.visited = true;
@@ -480,7 +480,7 @@ public class Maze extends World {
   }
   
   // Breadth-first search
-  void BFS() {
+  void bfs() {
     if (worklist.size() > 0 && !completed) {
       next = worklist.remove(0);
       next.visited = true;

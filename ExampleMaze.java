@@ -193,6 +193,7 @@ public class ExampleMaze {
 
   // Testing the player constructor
   Player p = new Player(10);
+  
   void testPlayerConstructor(Tester t) {
     t.checkExpect(p.x, 0);
     t.checkExpect(p.y, 0);
@@ -206,6 +207,7 @@ public class ExampleMaze {
   
   // Testing the makeUnvisited method for cells
   Cell c = new Cell(0, 0, 10);
+  
   void testMakeUnvisited(Tester t) {
     t.checkExpect(c.visited, false);
     c.visited = true;
@@ -238,7 +240,7 @@ public class ExampleMaze {
     t.checkExpect(m.worklist.get(0), m.start);
     // the size of the array of all the processed cells should be equal to 0
     t.checkExpect(m.processed.size(), 0);
-    m.DFS();
+    m.dfs();
     // the worklist's first element should have been processed at the end of one 
     // iteration of the DFS
     t.checkExpect(m.worklist.get(0).equals(m.start), false);
@@ -248,9 +250,9 @@ public class ExampleMaze {
     // the starting cell should have been mutated to being visited
     t.checkExpect(m.start.visited, true);
     // running DFS a few times
-    m.DFS();
-    m.DFS();
-    m.DFS();
+    m.dfs();
+    m.dfs();
+    m.dfs();
     // the size of the worklist is larger than 0
     t.checkExpect(m.worklist.size() > 0, true);
     // four cells tested so far
@@ -262,7 +264,7 @@ public class ExampleMaze {
     t.checkExpect(m2.worklist.get(0), m2.start);
     // the size of the array of all the processed cells should be equal to 0
     t.checkExpect(m2.processed.size(), 0);
-    m2.BFS();
+    m2.bfs();
     // the worklist's first element should have been processed at the end of one 
     // iteration of the DFS
     t.checkExpect(m2.worklist.get(0).equals(m2.start), false);
