@@ -41,14 +41,14 @@ public class Cell {
   }
   
   // display that creates a World Image of this cell
-  WorldImage display() {
+  WorldImage display(boolean showVisited) {
     if (this.truePath) {
       return new RectangleImage(cellSize, cellSize, OutlineMode.SOLID,
-          Color.BLUE);
+          new Color(220, 220, 60));
     }
-    if (this.visited) {
+    if (this.visited && showVisited) {
       return new RectangleImage(cellSize, cellSize, OutlineMode.SOLID,
-          Color.YELLOW);
+          new Color(170, 170, 240));
     }
     return new RectangleImage(cellSize, cellSize, OutlineMode.SOLID,
         Color.LIGHT_GRAY);

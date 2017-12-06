@@ -38,6 +38,9 @@ public class Maze extends World {
   ArrayUtils utils;
   // search type, "d" = depth first search, "b" = breadth first search
   String searchType;
+  // determines whether to display the visited cells
+  boolean showVisited;
+
 
   // starting cell
   Cell start;
@@ -53,6 +56,10 @@ public class Maze extends World {
   Cell next;
   // has the maze been completed
   boolean completed;
+  // is the search being controlled by the player?
+  boolean playerControl;
+  // the player (used when giving human control)
+  Player player;
   
   Maze(int width, int height, String s) {
     this.width = width;
@@ -66,6 +73,9 @@ public class Maze extends World {
     weightComp = new WeightComp();
     arrayUtils = new ArrayUtils();
     cellHashMap = new HashMap<String, String>();
+    playerControl = false;
+    player = new Player(cellSize);
+    showVisited = true;
     
     //System.out.println(width + " " + height);
 
@@ -98,10 +108,14 @@ public class Maze extends World {
     weightComp = new WeightComp();
     arrayUtils = new ArrayUtils();
     cellHashMap = new HashMap<String, String>();
+    playerControl = false;
+    player = new Player(cellSize);
+    showVisited = true;
     
     //System.out.println(width + " " + height);
-    
+
     generateCells();
+    //System.out.println(cells.size() + " " + cells.get(0).size());
     setLinks();
     generateEdges();
     generateHashMap();
@@ -124,6 +138,7 @@ public class Maze extends World {
     
     defaultWorld = new WorldScene(width * cellSize, height * cellSize);
     cellHashMap = new HashMap<String, String>();
+    player = new Player(cellSize);
     
     //System.out.println(width + " " + height);
 
@@ -134,7 +149,9 @@ public class Maze extends World {
     generateHashMap();
     kruskalImplements();
 
-    searchType = s;
+    if (!playerControl) {
+      searchType = s;
+    }
     start = cells.get(0).get(0);
     target = cells.get(width - 1).get(height - 1);
     cameFromEdge = new HashMap<Cell,Edge>();
@@ -209,14 +226,14 @@ public class Maze extends World {
         c = cells.get(i).get(j);
         if (i == 0 && j == 0) {
           k = new RectangleImage(cellSize, cellSize, OutlineMode.SOLID,
-              Color.GREEN);
+              new Color(40, 200, 50));
         }
         else if (i == width - 1 && j == height - 1) {
           k = new RectangleImage(cellSize, cellSize, OutlineMode.SOLID,
-              Color.magenta);
+              new Color(240, 20, 70));
         }
         else {
-          k = c.display();
+          k = c.display(showVisited);
         }
         defaultWorld.placeImageXY(k,
             c.x * cellSize + cellSize / 2 + 5,
@@ -233,6 +250,13 @@ public class Maze extends World {
           e.c1.y * cellSize + 5 + ((e.c1.x - e.c2.x == 0) ? cellSize : cellSize / 2));
     }
   }
+  
+  // generates the image of the player at their current location
+  void generatePlayerImage() {
+    defaultWorld.placeImageXY(player.display(), 
+        player.x * cellSize + cellSize / 2 + 5,
+        player.y * cellSize + cellSize / 2 + 5);
+  }
  
   // puts the cells into a hashmap
   void generateHashMap() {
@@ -243,6 +267,7 @@ public class Maze extends World {
     }
   }
   
+  // the main makeScene function
   public WorldScene makeScene() {
     defaultWorld = this.getEmptyScene();
     defaultWorld.placeImageXY(new RectangleImage(defaultWorld.width * cellSize,
@@ -250,8 +275,16 @@ public class Maze extends World {
         defaultWorld.width / 2 * cellSize, defaultWorld.height / 2 * cellSize);
     generateCellImages();
     generateEdgeImages();
+    if (playerControl) {
+      generatePlayerImage();
+    }
 
     return defaultWorld;
+  }
+  
+  // gets the current cell that the player is on
+  Cell getCurrentCell() {
+    return cells.get(player.x).get(player.y);
   }
   
   // on key handler
@@ -262,18 +295,81 @@ public class Maze extends World {
     if (ke.equals("e")) {
       remake("b");
     }
+    if (ke.equals("p")) {
+      this.playerControl = !playerControl;
+      remake("player");
+    }
+    
+    if (ke.equals("t")) {
+      this.showVisited = !showVisited;
+    }
+    
+    // player controls
+    if (playerControl && !completed) {
+      Cell currentCell = this.getCurrentCell();
+      if (ke.equals("w") || ke.equals("up")) {
+        if (currentCell.top != null 
+            && path.contains(this.getEdge(currentCell, currentCell.top))) {
+          if (!currentCell.top.visited) {
+            cameFromEdge.put(currentCell.top, getEdge(currentCell, currentCell.top));
+          }
+          player.y = player.y - 1;
+          currentCell.visited = true;
+        }
+      }
+      
+      if (ke.equals("a") || ke.equals("left")) {
+        if (currentCell.left != null 
+            && path.contains(this.getEdge(currentCell, currentCell.left))) {
+          if (!currentCell.left.visited) {
+            cameFromEdge.put(currentCell.left, getEdge(currentCell, currentCell.left));
+          }
+          player.x = player.x - 1;
+          currentCell.visited = true;
+        }
+      }
+      
+      if (ke.equals("s") || ke.equals("down")) {
+        if (currentCell.bottom != null 
+            && path.contains(this.getEdge(currentCell, currentCell.bottom))) {
+          if (!currentCell.bottom.visited) {
+            cameFromEdge.put(currentCell.bottom, getEdge(currentCell, currentCell.bottom));
+          }
+          player.y = player.y + 1;
+          currentCell.visited = true;
+        }
+        
+      }
+      
+      if (ke.equals("d") || ke.equals("right")) {
+        if (currentCell.right != null 
+            && path.contains(this.getEdge(currentCell, currentCell.right))) {
+          if (!currentCell.right.visited) {
+            cameFromEdge.put(currentCell.right, getEdge(currentCell, currentCell.right));
+          }
+          player.x = player.x + 1;
+          currentCell.visited = true;
+        }
+      }
+    }
   }
   
   // on tick 
   public void onTick() {
-    if (searchType == "d") {
-      DFS();
+    if (!playerControl) {
+      if (searchType == "d") {
+        DFS();
+      }
+      else {
+        BFS();
+      }
     }
-    else {
-      BFS();
+    if (player.x == target.x && player.y == target.y && !completed) {
+      completed = true;
+      this.reconstruct(cameFromEdge, getCurrentCell(), start);
     }
   }
-  
+
   // the kruskal algorithm
   void kruskalImplements() {
     ArrayList<Edge> edgesInTree = new ArrayList<Edge>();
@@ -326,7 +422,7 @@ public class Maze extends World {
   // Depth-first search
   void DFS() {
     if (worklist.size() > 0 && !completed) {
-      next = worklist.remove(worklist.size() - 1);
+      next = worklist.remove(0);
       next.visited = true;
       if (processed.contains(next)) {
         return;
@@ -365,7 +461,7 @@ public class Maze extends World {
   // Breadth-first search
   void BFS() {
     if (worklist.size() > 0 && !completed) {
-      next = worklist.remove(0);
+      next = worklist.remove(worklist.size() - 1);
       next.visited = true;
       if (processed.contains(next)) {
         return;
@@ -376,16 +472,6 @@ public class Maze extends World {
         return;
       }
       else {
-        if (next.bottom != null && path.contains(getEdge(next, next.bottom))
-            && !processed.contains(next.bottom)) {
-          worklist.add(next.bottom);
-          cameFromEdge.put(next.bottom, getEdge(next, next.bottom));
-        }
-        if (next.right != null && path.contains(getEdge(next, next.right)) 
-            && !processed.contains(next.right)) {
-          worklist.add(next.right);
-          cameFromEdge.put(next.right, getEdge(next, next.right));
-        }
         if (next.top != null && path.contains(getEdge(next, next.top)) 
             && !processed.contains(next.top)) {
           worklist.add(next.top);
@@ -395,6 +481,16 @@ public class Maze extends World {
             && !processed.contains(next.left)) {
           worklist.add(next.left);
           cameFromEdge.put(next.left, getEdge(next, next.left));
+        }
+        if (next.bottom != null && path.contains(getEdge(next, next.bottom))
+            && !processed.contains(next.bottom)) {
+          worklist.add(next.bottom);
+          cameFromEdge.put(next.bottom, getEdge(next, next.bottom));
+        }
+        if (next.right != null && path.contains(getEdge(next, next.right)) 
+            && !processed.contains(next.right)) {
+          worklist.add(next.right);
+          cameFromEdge.put(next.right, getEdge(next, next.right));
         }
       }
       processed.add(next);
@@ -436,6 +532,5 @@ public class Maze extends World {
       k = hm.get(prev);
       prev = otherEnd(prev, k);
     }
-  
   }
 }

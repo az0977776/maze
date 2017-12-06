@@ -174,12 +174,26 @@ public class ExampleMaze {
     t.checkExpect(m.cells.get(2).get(2).left, m.cells.get(1).get(2));
   }
   
+  // TODO Test player class and methods
+  
+  // TODO Test onKeyEvent
+  
+  // TODO Test BFS
+  
+  // TODO Test DFS
+  
+  // TODO Test Generate Player Image
+  
+  // TODO test getCurrentCell
+  
+  // TODO test cell display function
+  
   
   // tests the rendering of the Maze
   void testBigBang(Tester t) {
-    Maze m = new Maze(100,60);
+    Maze m = new Maze(10, 10,"player");
     World w = m;
-    w.bigBang(m.width * m.cellSize + 8, m.height * m.cellSize + 8,0.05);
+    w.bigBang(m.width * m.cellSize + 8, m.height * m.cellSize + 8,0.01);
   }
   
   
