@@ -510,7 +510,7 @@ public class Maze extends World {
     return null;
   }
   
-  // gets the cell at the other end of the edge
+  // gets the cell at the other end of the edge when given a cell and an edge
   Cell otherEnd(Cell c, Edge e) {
     if (e.c1 == c) {
       return e.c2;
