@@ -115,7 +115,7 @@ public class Maze extends World {
     generateHashMap();
     kruskalImplements();
 
-    searchType = "d";
+    searchType = "dfs";
     start = cells.get(0).get(0);
     target = cells.get(width - 1).get(height - 1);
     cameFromEdge = new HashMap<Cell,Edge>();

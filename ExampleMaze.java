@@ -15,15 +15,30 @@ public class ExampleMaze {
       // a certain range of numbers
       t.checkNumRange(e.weight, 0, 1);
     }
+    t.checkExpect(m.showVisited, true);
+    t.checkExpect(m.playerControl, true);
+    t.checkExpect(m.searchType, "dfs");
+    t.checkExpect(m.start, m.cells.get(0).get(0));
+    t.checkExpect(m.target, m.cells.get(m.width - 1).get(m.height - 1));
+    t.checkExpect(m.completed, false);
+    t.checkExpect(m.worklist.size(), 1);
+    
     // testing the remake function that regenerates the maze with 
     // the same height and width
-    m.remake("eggtart");
+    m.remake("dfs");
     for (Edge e : m.edges) {
       // checks that the remake function created
       // add the edges with weights within
       // a certain range of numbers
       t.checkNumRange(e.weight, 0, 1);
     }
+    t.checkExpect(m.showVisited, true);
+    t.checkExpect(m.playerControl, true);
+    t.checkExpect(m.searchType, "dfs");
+    t.checkExpect(m.start, m.cells.get(0).get(0));
+    t.checkExpect(m.target, m.cells.get(m.width - 1).get(m.height - 1));
+    t.checkExpect(m.completed, false);
+    t.checkExpect(m.worklist.size(), 1);
   }
  
   // checks the generation of the cells
@@ -224,7 +239,9 @@ public class ExampleMaze {
     t.checkExpect(m.cells.get(1).get(1).visited, false);
     m.worklist.add(c);
     m.resetMaze();
-    t.checkExpect(m.worklist, new ArrayList<Cell>());
+    ArrayList<Cell> n = new ArrayList<Cell>();
+    n.add(m.start);
+    t.checkExpect(m.worklist, n);
   }
   
   // Testing onKeyEvent
