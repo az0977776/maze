@@ -178,10 +178,12 @@ public class ExampleMaze {
   
   // TODO Test onKeyEvent
   
-  // TODO Test BFS
-  
-  // TODO Test DFS
-  
+  // TODO Test BFS and DFS
+  void testSearches(Tester t) {
+    Maze m = new Maze(10,10, "player");
+    
+  }
+
   // TODO Test Generate Player Image
   
   // TODO test getCurrentCell
@@ -190,7 +192,7 @@ public class ExampleMaze {
   
   
   // tests the rendering of the Maze
-  void testBigBang(Tester t) {
+  void dtestBigBang(Tester t) {
     Maze m = new Maze(10, 10,"player");
     World w = m;
     w.bigBang(m.width * m.cellSize + 8, m.height * m.cellSize + 8,0.01);
