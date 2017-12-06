@@ -175,6 +175,7 @@ public class ExampleMaze {
   }
   
   // TODO Test player class and methods
+  Player p = new Player(10);
   
   // TODO Test onKeyEvent
   
