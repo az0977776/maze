@@ -77,10 +77,7 @@ public class Maze extends World {
     player = new Player(cellSize);
     showVisited = true;
     
-    //System.out.println(width + " " + height);
-
     generateCells();
-    //System.out.println(cells.size() + " " + cells.get(0).size());
     setLinks();
     generateEdges();
     generateHashMap();
@@ -112,10 +109,7 @@ public class Maze extends World {
     player = new Player(cellSize);
     showVisited = true;
     
-    //System.out.println(width + " " + height);
-
     generateCells();
-    //System.out.println(cells.size() + " " + cells.get(0).size());
     setLinks();
     generateEdges();
     generateHashMap();
@@ -140,10 +134,8 @@ public class Maze extends World {
     cellHashMap = new HashMap<String, String>();
     player = new Player(cellSize);
     
-    //System.out.println(width + " " + height);
 
     generateCells();
-    //System.out.println(cells.size() + " " + cells.get(0).size());
     setLinks();
     generateEdges();
     generateHashMap();
@@ -163,13 +155,20 @@ public class Maze extends World {
   }
   
   // makes all of the cells unvisited without resetting the maze itself
+  // also resets the worklist and the processed list and sets completed to false
   // used when player control is toggled
-  void makeAllCellsUnvisited() {
+  void resetMaze() {
     for (ArrayList<Cell> cl: cells) {
       for (Cell c: cl) {
         c.makeUnvisited();
+        c.truePath = false;
       }
     }
+    worklist = new ArrayList<Cell>();
+    worklist.add(0, start);
+    processed = new ArrayList<Cell>();
+    completed = false;
+    
   }
 
   //generates all the Cells
@@ -300,14 +299,25 @@ public class Maze extends World {
   // on key handler
   public void onKeyEvent(String ke) {
     if (ke.equals("r")) {
-      remake("d");
+      searchType = "bfs";
+      playerControl = false;
+      resetMaze();
+      this.player = new Player(cellSize);
     }
     if (ke.equals("e")) {
-      remake("b");
+      searchType = "dfs";
+      playerControl = false;
+      resetMaze();
+      this.player = new Player(cellSize);
+    }
+    if (ke.equals("g")) {
+      this.playerControl = true;
+      remake(searchType.substring(0, 1));
     }
     if (ke.equals("p")) {
-      this.playerControl = !playerControl;
-      makeAllCellsUnvisited();
+      this.playerControl = true;
+      resetMaze();
+      completed = false;
       this.player = new Player(cellSize); 
     }
     
@@ -368,7 +378,7 @@ public class Maze extends World {
   // on tick 
   public void onTick() {
     if (!playerControl) {
-      if (searchType == "d") {
+      if (searchType == "dfs") {
         DFS();
       }
       else {
@@ -513,11 +523,9 @@ public class Maze extends World {
   Edge getEdge(Cell start, Cell end) {
     for (Edge e : path) {
       if ((e.c1 == start && e.c2 == end) || (e.c1 == end && e.c2 == start)) {
-        //System.out.println("found edge");
         return e;
       }
     }
-    //System.out.println("did not find edge");
     return null;
   }
   
