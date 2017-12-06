@@ -2,8 +2,7 @@ import java.awt.Color;
 import java.util.*;
 
 import javalib.impworld.World;
-import javalib.worldimages.OutlineMode;
-import javalib.worldimages.RectangleImage;
+import javalib.worldimages.*;
 import tester.*;
 
 public class ExampleMaze {
@@ -177,6 +176,7 @@ public class ExampleMaze {
     t.checkExpect(m.cells.get(2).get(2).left, m.cells.get(1).get(2));
   }
   
+
   // test generateHashMap
   void testGenerateHashMap(Tester t) {
     Maze m = new Maze(10,10);
@@ -192,8 +192,45 @@ public class ExampleMaze {
   }
   
   // TODO Test player class and methods
+
+  // Testing the player constructor
+  Player p = new Player(10);
+  void testPlayerConstructor(Tester t) {
+    t.checkExpect(p.x, 0);
+    t.checkExpect(p.y, 0);
+    t.checkExpect(p.size, 10);
+  }
   
-  // TODO Test onKeyEvent
+  // Testing the player display
+  void testPlayerDisplay(Tester t) {
+    t.checkExpect(p.display(), new RectangleImage(8, 8, OutlineMode.SOLID, Color.ORANGE));
+  }
+  
+  // Testing the makeUnvisited method for cells
+  Cell c = new Cell(0, 0, 10);
+  void testMakeUnvisited(Tester t) {
+    t.checkExpect(c.visited, false);
+    c.visited = true;
+    t.checkExpect(c.visited, true);
+    c.makeUnvisited();
+    t.checkExpect(c.visited, false);
+  }
+  
+  // Testing the makeAllCellsUnvisited method
+  void testResetMaze(Tester t) {
+    Maze m = new Maze(2, 2, "player");
+    m.cells.get(1).get(1).visited = true;
+    m.resetMaze();
+    t.checkExpect(m.cells.get(1).get(1).visited, false);
+    m.worklist.add(c);
+    m.resetMaze();
+    t.checkExpect(m.worklist, new ArrayList<Cell>());
+  }
+  
+  // Testing onKeyEvent
+  void testOnKeyEvent(Tester t) {
+    
+  }
   
   // TODO Test BFS and DFS
   void testSearches(Tester t) {
@@ -238,6 +275,10 @@ public class ExampleMaze {
     t.checkExpect(m2.start.visited, true);
     
   }
+  
+  // TODO test getCurrentCell
+  
+  // TODO test cell display function
   
   // test getCurrentCell
   void testGetCurrentCell(Tester t) {
@@ -286,10 +327,10 @@ public class ExampleMaze {
   }
   
   // tests the rendering of the Maze
-  void dtestBigBang(Tester t) {
-    Maze m = new Maze(10, 10,"player");
+  void testBigBang(Tester t) {
+    Maze m = new Maze(160, 100,"dfs");
     World w = m;
-    w.bigBang(m.width * m.cellSize + 8, m.height * m.cellSize + 8,0.01);
+    w.bigBang(m.width * m.cellSize + 8, m.height * m.cellSize + 8,0.00001);
   }
   
   
